@@ -1,1 +1,11 @@
-from .pointcloud import load_point_clouds, save_aligned_cloud, sequential_registration, optimize_pose_graph, apply_pose_graph, remove_background, colored_icp_registration, execute_global_registration,refine_registration 
+from .pointcloud import (
+    load_point_clouds,
+    remove_background,
+    full_registration,
+    pairwise_registration,
+    save_combined_point_cloud,
+    remove_outliers,
+    remove_small_clusters,
+    remove_density_outliers,
+    remove_normal_outliers
+)

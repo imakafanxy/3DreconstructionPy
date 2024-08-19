@@ -1,65 +1,120 @@
+import time
 import cv2
-from camera.cameraCaptureSeg import RealSenseCameraSeg
-from camera.cameraCaptureROI import RealSenseCameraROI
-from pointcloud.pointcloud import load_point_clouds, sequential_registration, optimize_pose_graph, apply_pose_graph, save_aligned_cloud, remove_background
-from mesh.mesh import create_mesh_from_pcd, save_mesh
-import open3d as o3d
 import numpy as np
 import os
+import open3d as o3d
+from camera.cameraCaptureROI import RealSenseCameraROI
+from pointcloud import load_point_clouds, remove_background, full_registration, save_combined_point_cloud, remove_outliers, remove_small_clusters, remove_density_outliers, remove_normal_outliers
 
-def denoise_and_filter_pcd(pcd, distance_threshold=1.0, nb_neighbors=20, std_ratio=2.0):
-    pcd = remove_background(pcd, distance_threshold)
-    pcd, ind = pcd.remove_statistical_outlier(nb_neighbors=nb_neighbors, std_ratio=std_ratio)
-    pcd = pcd.select_by_index(ind)
-    return pcd
-
-def main(mode="ROI"):
-    directory = "weSeePJ/saved_pcd"
+def main():
+    camera = RealSenseCameraROI(display_all=True)
+    max_correspondence_distance_coarse = 0.03
+    max_correspondence_distance_fine = 0.01
+    voxel_size = 0.05
+    directory = "saved_pcd"
+    
     if not os.path.exists(directory):
         os.makedirs(directory)
+    
+    try:
+        front_captured_files = []
+        back_captured_files = []
+        captured_files = []
+        capturing = False
+        capture_start_time = 0
+        
+        while True:
+            frames = camera.pipeline.wait_for_frames()
+            aligned_frames = camera.align.process(frames)
+            depth_frame = aligned_frames.get_depth_frame()
+            color_frame = aligned_frames.get_color_frame()
+            if not depth_frame or not color_frame:
+                continue
 
-    if mode == "Segmentation":
-        camera = RealSenseCameraSeg()
-    elif mode == "ROI":
-        camera = RealSenseCameraROI()
-    else:
-        print("Invalid mode selected. Choose 'Segmentation' or 'ROI'.")
-        return
+            depth_image = np.asanyarray(depth_frame.get_data())
+            color_image = np.asanyarray(color_frame.get_data())
+            
+            color_image = camera.draw_roi_box(color_image)
 
-    captured_files = camera.capture_frames(delay=10, duration=40, interval=1)
-    print(f"Captured files: {captured_files}")
+            depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.03), cv2.COLORMAP_JET)
+            combined_image = np.hstack((color_image, depth_colormap))
+            cv2.imshow('RealSense', combined_image)
 
-    if len(captured_files) < 2:
-        print("Not enough frames captured for alignment.")
-        return
+            key = cv2.waitKey(1)
 
-    pcds = load_point_clouds(directory, filenames=captured_files)
+            if key == ord('c'):
+                print("Starting capture in 10 seconds...")
+                time.sleep(10)
+                capturing = True
+                capture_start_time = time.time()
 
-    pose_graph = sequential_registration(pcds)
-    print("Initial pose graph created with {} nodes and {} edges.".format(len(pose_graph.nodes), len(pose_graph.edges)))
+            if capturing:
+                current_time = time.time()
+                if current_time - capture_start_time > 1.5:
+                    filename = camera.capture_frame(prefix="output")
+                    captured_files.append(filename)
+                    print(f"Captured file: {filename}")
+                    capture_start_time = current_time
+                    if len(captured_files) >= 25:
+                        capturing = False
+                        print("Capture complete.")
+                        
+            if key == ord('r'):
+                print(f"Processing front files: {front_captured_files}")
+                front_captured_files = [f for f in os.listdir(directory) if f.startswith('output') and f.endswith('.pcd')]
+                pcds = load_point_clouds(directory, filenames=front_captured_files, voxel_size=voxel_size)
+                
+                for pcd in pcds:
+                    pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=voxel_size * 2, max_nn=30))
+                    pcd = remove_background(pcd, distance_threshold=1.0)
 
-    optimized_pose_graph = optimize_pose_graph(pose_graph)
-    print("Pose graph optimized.")
+                print(1)
+                pose_graph = full_registration(pcds, max_correspondence_distance_coarse, max_correspondence_distance_fine)
+                option = o3d.pipelines.registration.GlobalOptimizationOption(
+                    max_correspondence_distance=max_correspondence_distance_fine,
+                    edge_prune_threshold=0.25,
+                    reference_node=0)
+                print(2)
+                o3d.pipelines.registration.global_optimization(pose_graph,
+                                                                o3d.pipelines.registration.GlobalOptimizationLevenbergMarquardt(),
+                                                                o3d.pipelines.registration.GlobalOptimizationConvergenceCriteria(),
+                                                                option)
+                print(3)
+                pcd_combined = o3d.geometry.PointCloud()
+                for point_id in range(len(pcds)):
+                    pcds[point_id].transform(pose_graph.nodes[point_id].pose)
+                    pcd_combined += pcds[point_id]
+                print(4)
+                
+                #이상치 제거 및 작은 클러스터 제거
+                pcd_combined = remove_outliers(pcd_combined)
+                print(f"Combined point cloud has {len(pcd_combined.points)} points after outlier removal.")
+                
+                pcd_combined = remove_small_clusters(pcd_combined)
+                print(f"Combined point cloud has {len(pcd_combined.points)} points after small cluster removal.")
+                
+                pcd_combined = remove_density_outliers(pcd_combined, radius=0.05, min_neighbors=5)
+                print(f"Combined point cloud has {len(pcd_combined.points)} points after density outlier removal.")
+                
+                #pcd_combined = remove_normal_outliers(pcd_combined, threshold=0.3)
+                print(f"Combined point cloud has {len(pcd_combined.points)} points after normal outlier removal.")
 
-    aligned_cloud = apply_pose_graph(pcds, optimized_pose_graph)
-    print("Pose graph applied and point clouds aligned.")
+                if not pcd_combined.is_empty():
+                    print(f"Combined point cloud has {len(pcd_combined.points)} points. Saving...")
+                    save_path = f"saved_pcd/front_aligned_output.pcd"
+                    success = o3d.io.write_point_cloud(save_path, pcd_combined)
+                    if success:
+                        print(f"Aligned point cloud saved successfully to {save_path}")
+                    else:
+                        print(f"Failed to save aligned point cloud to {save_path}")
+                else:
+                    print("Combined point cloud is empty. Nothing to save.")
 
-    print("Denoising and filtering point cloud...")
-    aligned_cloud = denoise_and_filter_pcd(aligned_cloud, distance_threshold=1.0)
-
-    aligned_pcd_filename = os.path.join(directory, "aligned_output.pcd")
-    print(f"Saving aligned cloud to {aligned_pcd_filename}...")
-    save_aligned_cloud(aligned_cloud, filename=aligned_pcd_filename)
-
-    print("Creating mesh from aligned point cloud...")
-    mesh = create_mesh_from_pcd(aligned_pcd_filename)
-    if mesh is None:
-        print("Failed to create mesh.")
-        return
-    mesh_filename = os.path.join(directory, "mesh_output.ply")
-    print(f"Saving mesh to {mesh_filename}...")
-    save_mesh(mesh, filename=mesh_filename)
-    print("Mesh created and saved.")
+            elif key == 27:
+                break
+    finally:
+        camera.stop()
+        cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    main(mode="ROI")
+    main()
