@@ -1,11 +1,12 @@
+# Import all functions and classes from pointcloud module
+
 from .pointcloud import (
-    load_point_clouds,
+    load_and_preprocess_point_clouds,
     remove_background,
-    full_registration,
-    pairwise_registration,
-    save_combined_point_cloud,
     remove_outliers,
     remove_small_clusters,
-    remove_density_outliers,
-    remove_normal_outliers
+    estimate_normals,
+    global_registration,
+    icp_refinement,
+    full_registration,
 )

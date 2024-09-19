@@ -1,0 +1,333 @@
+<?xml version="1.0" standalone="yes"?>
+<CalibrationProject>
+  <xs:schema id="CalibrationProject" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="CalibrationProject" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="ObjWidth" type="xs:int" minOccurs="0" />
+                <xs:element name="ObjHeight" type="xs:int" minOccurs="0" />
+                <xs:element name="FieldSize" type="xs:double" minOccurs="0" />
+                <xs:element name="DetectionMethod" type="xs:int" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="images">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="ImagePath" type="xs:string" minOccurs="0" />
+                <xs:element name="SourceType" type="xs:int" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="results">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="ImageCount" type="xs:int" minOccurs="0" />
+                <xs:element name="focus_lenX" type="xs:double" minOccurs="0" />
+                <xs:element name="focus_lenY" type="xs:double" minOccurs="0" />
+                <xs:element name="PrincipalX" type="xs:double" minOccurs="0" />
+                <xs:element name="PrincipalY" type="xs:double" minOccurs="0" />
+                <xs:element name="Dist1" type="xs:double" minOccurs="0" />
+                <xs:element name="Dist2" type="xs:double" minOccurs="0" />
+                <xs:element name="Dist3" type="xs:double" minOccurs="0" />
+                <xs:element name="Dist4" type="xs:double" minOccurs="0" />
+                <xs:element name="focus_lenX_er" type="xs:double" minOccurs="0" />
+                <xs:element name="focus_lenY_er" type="xs:double" minOccurs="0" />
+                <xs:element name="PrincipalX_er" type="xs:double" minOccurs="0" />
+                <xs:element name="PrincipalY_er" type="xs:double" minOccurs="0" />
+                <xs:element name="Dist1_er" type="xs:double" minOccurs="0" />
+                <xs:element name="Dist2_er" type="xs:double" minOccurs="0" />
+                <xs:element name="Dist3_er" type="xs:double" minOccurs="0" />
+                <xs:element name="Dist4_er" type="xs:double" minOccurs="0" />
+                <xs:element name="dc_AllImage_errX" type="xs:double" minOccurs="0" />
+                <xs:element name="dc_AllImage_errY" type="xs:double" minOccurs="0" />
+                <xs:element name="Calib_Date" type="xs:string" minOccurs="0" />
+                <xs:element name="Calib_Type" type="xs:int" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <data>
+    <ObjWidth>8</ObjWidth>
+    <ObjHeight>11</ObjHeight>
+    <FieldSize>15</FieldSize>
+    <DetectionMethod>3</DetectionMethod>
+  </data>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_0.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_1.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_2.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_3.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_4.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_5.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_6.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_7.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_8.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_9.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_10.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_11.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_12.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_13.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_14.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_15.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_16.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_17.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_18.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_19.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_20.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_21.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_22.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_23.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_24.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_25.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_26.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_27.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_28.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_29.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_30.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_31.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_32.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_33.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_34.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_35.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_36.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_37.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_38.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_39.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_40.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_41.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_42.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_43.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_44.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_45.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_46.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_47.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_48.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_49.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_50.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_51.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_52.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_53.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_54.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_55.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_56.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_57.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_58.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_59.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_60.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>C:\Users\iilab\Desktop\3DbodyScan\weSeePJ\cameraCapture\Camera2_capture_61.png</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <results>
+    <ImageCount>62</ImageCount>
+    <focus_lenX>649.99621575792867</focus_lenX>
+    <focus_lenY>649.88947887728057</focus_lenY>
+    <PrincipalX>649.23332445990832</PrincipalX>
+    <PrincipalY>358.06202375035213</PrincipalY>
+    <Dist1>-0.025687671705320849</Dist1>
+    <Dist2>0.023032859726674786</Dist2>
+    <Dist3>-0.0058890471355568293</Dist3>
+    <Dist4>-0.002327228599279444</Dist4>
+    <focus_lenX_er>1.9380432367324829</focus_lenX_er>
+    <focus_lenY_er>1.8758820295333862</focus_lenY_er>
+    <PrincipalX_er>1.8563944101333618</PrincipalX_er>
+    <PrincipalY_er>1.7317219972610474</PrincipalY_er>
+    <Dist1_er>0.0035782267805188894</Dist1_er>
+    <Dist2_er>0.0070472909137606621</Dist2_er>
+    <Dist3_er>0.00072039139922708273</Dist3_er>
+    <Dist4_er>0.00074580131331458688</Dist4_er>
+    <dc_AllImage_errX>0.463134433864022</dc_AllImage_errX>
+    <dc_AllImage_errY>0.26963732261172951</dc_AllImage_errY>
+    <Calib_Date>2024-08-27 오전 11:01:39</Calib_Date>
+    <Calib_Type>2</Calib_Type>
+  </results>
+</CalibrationProject>

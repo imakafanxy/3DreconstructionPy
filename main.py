@@ -4,116 +4,99 @@ import numpy as np
 import os
 import open3d as o3d
 from camera.cameraCaptureROI import RealSenseCameraROI
-from pointcloud import load_point_clouds, remove_background, full_registration, save_combined_point_cloud, remove_outliers, remove_small_clusters, remove_density_outliers, remove_normal_outliers
+from pointcloud import load_and_preprocess_point_clouds, full_registration
 
 def main():
-    camera = RealSenseCameraROI(display_all=True)
-    max_correspondence_distance_coarse = 0.03
-    max_correspondence_distance_fine = 0.01
-    voxel_size = 0.05
+    camera = RealSenseCameraROI()
+    voxel_size = 0.05  
+    max_correspondence_distance_coarse = 0.01  
+    max_correspondence_distance_fine = 0.05  
+
     directory = "saved_pcd"
     
     if not os.path.exists(directory):
         os.makedirs(directory)
-    
+
+    capturing = False
+    frame_count = 0
+    captured_files = []
+
     try:
-        front_captured_files = []
-        back_captured_files = []
-        captured_files = []
-        capturing = False
-        capture_start_time = 0
-        
         while True:
-            frames = camera.pipeline.wait_for_frames()
-            aligned_frames = camera.align.process(frames)
-            depth_frame = aligned_frames.get_depth_frame()
-            color_frame = aligned_frames.get_color_frame()
-            if not depth_frame or not color_frame:
-                continue
-
-            depth_image = np.asanyarray(depth_frame.get_data())
-            color_image = np.asanyarray(color_frame.get_data())
-            
-            color_image = camera.draw_roi_box(color_image)
-
-            depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.03), cv2.COLORMAP_JET)
-            combined_image = np.hstack((color_image, depth_colormap))
-            cv2.imshow('RealSense', combined_image)
+            # Stream 이미지와 ROI 박스 표시
+            camera.stream_with_roi()
 
             key = cv2.waitKey(1)
 
             if key == ord('c'):
-                print("Starting capture in 10 seconds...")
+                print("Waiting for 10 seconds before starting capture...")
                 time.sleep(10)
+
+                start_time = time.time()
                 capturing = True
-                capture_start_time = time.time()
+                frame_count = 0
 
-            if capturing:
-                current_time = time.time()
-                if current_time - capture_start_time > 1.5:
-                    filename = camera.capture_frame(prefix="output")
-                    captured_files.append(filename)
-                    print(f"Captured file: {filename}")
-                    capture_start_time = current_time
-                    if len(captured_files) >= 25:
-                        capturing = False
+                while capturing:
+                    if time.time() - start_time > 40:
                         print("Capture complete.")
-                        
-            if key == ord('r'):
-                print(f"Processing front files: {front_captured_files}")
-                front_captured_files = [f for f in os.listdir(directory) if f.startswith('output') and f.endswith('.pcd')]
-                pcds = load_point_clouds(directory, filenames=front_captured_files, voxel_size=voxel_size)
-                
-                for pcd in pcds:
-                    pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=voxel_size * 2, max_nn=30))
-                    pcd = remove_background(pcd, distance_threshold=1.0)
+                        capturing = False
+                        break
 
-                print(1)
-                pose_graph = full_registration(pcds, max_correspondence_distance_coarse, max_correspondence_distance_fine)
-                option = o3d.pipelines.registration.GlobalOptimizationOption(
-                    max_correspondence_distance=max_correspondence_distance_fine,
-                    edge_prune_threshold=0.25,
-                    reference_node=0)
-                print(2)
-                o3d.pipelines.registration.global_optimization(pose_graph,
-                                                                o3d.pipelines.registration.GlobalOptimizationLevenbergMarquardt(),
-                                                                o3d.pipelines.registration.GlobalOptimizationConvergenceCriteria(),
-                                                                option)
-                print(3)
-                pcd_combined = o3d.geometry.PointCloud()
-                for point_id in range(len(pcds)):
-                    pcds[point_id].transform(pose_graph.nodes[point_id].pose)
-                    pcd_combined += pcds[point_id]
-                print(4)
+                    filename = camera.capture_frame(prefix=f"output_{frame_count + 1}")
+
+                    if not filename:
+                        print(f"[ERROR] Capture failed for frame {frame_count + 1}.")
+                    else:
+                        captured_files.append(filename)
+                        print(f"Captured file {frame_count + 1}: {filename}")
+                        frame_count += 1
+
+                    time.sleep(0.5)
+
+            elif key == ord('r'):
+                print("Starting registration...")
+
+                pcd_files = os.listdir(directory)
+                pcd_files.sort()
+
+                if len(pcd_files) == 0:
+                    print("No processed point clouds found. Please capture first.")
+                    continue
+
+                # load_and_preprocess_point_clouds 함수를 호출하여 전처리 수행
+                pcds = load_and_preprocess_point_clouds(directory, filenames=pcd_files, voxel_size=voxel_size)
+                total_files = len(pcds)
+                print(f"Loaded {total_files} point clouds for registration.")
+
+                start_time = time.time()
+                print("Performing global registration...")
+
+                # full_registration 함수 호출
+                pcd_combined, transformations = full_registration(pcds, voxel_size, max_correspondence_distance_fine)
                 
-                #이상치 제거 및 작은 클러스터 제거
-                pcd_combined = remove_outliers(pcd_combined)
-                print(f"Combined point cloud has {len(pcd_combined.points)} points after outlier removal.")
-                
-                pcd_combined = remove_small_clusters(pcd_combined)
-                print(f"Combined point cloud has {len(pcd_combined.points)} points after small cluster removal.")
-                
-                pcd_combined = remove_density_outliers(pcd_combined, radius=0.05, min_neighbors=5)
-                print(f"Combined point cloud has {len(pcd_combined.points)} points after density outlier removal.")
-                
-                #pcd_combined = remove_normal_outliers(pcd_combined, threshold=0.3)
-                print(f"Combined point cloud has {len(pcd_combined.points)} points after normal outlier removal.")
+                registration_time = time.time() - start_time
+                print(f"Global registration and fine ICP completed in {registration_time:.2f} seconds.")
 
                 if not pcd_combined.is_empty():
-                    print(f"Combined point cloud has {len(pcd_combined.points)} points. Saving...")
-                    save_path = f"saved_pcd/front_aligned_output.pcd"
-                    success = o3d.io.write_point_cloud(save_path, pcd_combined)
-                    if success:
-                        print(f"Aligned point cloud saved successfully to {save_path}")
-                    else:
-                        print(f"Failed to save aligned point cloud to {save_path}")
-                else:
-                    print("Combined point cloud is empty. Nothing to save.")
+                    print(f"Final merged point cloud contains {len(pcd_combined.points)} points.")
 
-            elif key == 27:
+                    print("Starting to save final PCD...")
+                    start_save_time = time.time()
+
+                    final_save_path = os.path.join(directory, "final_output.pcd")
+                    o3d.io.write_point_cloud(final_save_path, pcd_combined)
+
+                    save_time = time.time() - start_save_time
+                    print(f"Final aligned point cloud saved to {final_save_path} in {save_time:.2f} seconds.")
+                else:
+                    print("[ERROR] Merged point cloud is empty, skipping save.")
+
+            elif key == ord('q'):
+                print("Exiting.")
                 break
+
     finally:
-        camera.stop()
+        camera.sensor.stop_capture()
         cv2.destroyAllWindows()
 
 if __name__ == "__main__":

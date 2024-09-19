@@ -1,3 +1,4 @@
+import time
 import cv2
 import os
 import numpy as np
@@ -5,7 +6,7 @@ import pyrealsense2 as rs
 import open3d as o3d
 
 class RealSenseCameraROI:
-    def __init__(self, roi=(400, 50, 500, 800, 0.2, 1.2), display_all=False):
+    def __init__(self, roi=(200, 100, 650, 400, 0.2, 2.0), display_all=False):
         self.pipeline = rs.pipeline()
         self.config = rs.config()
         self.config.enable_stream(rs.stream.depth, 1280, 720, rs.format.z16, 30)
@@ -91,7 +92,7 @@ def load_point_clouds(directory, filenames=None, voxel_size=0.05):
             print(f"Warning: {filename} is empty or could not be loaded.")
     return pcds
 
-def remove_background(pcd, distance_threshold=1.2):
+def remove_background(pcd, distance_threshold=2.0):
     points = np.asarray(pcd.points)
     distances = np.linalg.norm(points, axis=1)
     mask = distances < distance_threshold
@@ -130,7 +131,7 @@ def full_registration(pcds, max_correspondence_distance_coarse, max_corresponden
 
 def main():
     camera = RealSenseCameraROI(display_all=True)
-    max_correspondence_distance_coarse = 0.035
+    max_correspondence_distance_coarse = 0.05
     max_correspondence_distance_fine = 0.02
     voxel_size = 0.05
     directory = "saved_pcd"
@@ -162,9 +163,33 @@ def main():
             key = cv2.waitKey(1)
             
             if key == ord('f'):
-                filename = camera.capture_frame(prefix="output", position="front")
-                front_captured_files.append(filename)
-                print(f"Captured file: {filename}")
+                # 10초 대기
+                print("Waiting for 10 seconds before starting capture...")
+                time.sleep(10)
+
+                # 1초에 1장씩, 40초 동안 촬영 (총 40장)
+                start_time = time.time()
+                capturing = True
+                frame_count = 0
+
+                while capturing:
+                    if time.time() - start_time > 40:
+                        print("Capture complete.")
+                        capturing = False
+                        break
+
+                    filename = camera.capture_frame(prefix="output", position="front")
+
+                    if not filename:
+                        print(f"[ERROR] Capture failed for frame {frame_count + 1}.")
+                    else:
+                        # 파일이 성공적으로 저장되었으면 목록에 추가
+                        front_captured_files.append(filename)
+                        print(f"Captured file {frame_count + 1}: {filename}")
+
+                    # 1초 대기 (1초에 1장 촬영을 위해)
+                    time.sleep(1)
+                    frame_count += 1
             elif key == ord('b'):
                 filename = camera.capture_frame(prefix="output", position="back")
                 back_captured_files.append(filename)
@@ -214,7 +239,7 @@ def main():
                 # 모든 포인트 클라우드에 대해 노말 추정 및 배경 제거
                 for pcd in pcds:
                     pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=voxel_size * 2, max_nn=30))
-                    pcd = remove_background(pcd, distance_threshold=1.0)
+                    pcd = remove_background(pcd, distance_threshold=2.0)
 
                 print(2-1)
                 pose_graph = full_registration(pcds, max_correspondence_distance_coarse, max_correspondence_distance_fine)
