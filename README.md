@@ -109,7 +109,7 @@ Im use RealSense D455 depth camera
 ├── README.md               # Project documentation
 ├── requirements.txt        # Python dependencies
 └── main.py                 # Main script to run the pipeline
-
+```
 ---
 
 # Method Details
@@ -146,7 +146,6 @@ camera = RealSenseCameraROI(
 
 # Capture 34 frames
 camera.capture_frames(frame_count=34)
-```
 
 ---
 
