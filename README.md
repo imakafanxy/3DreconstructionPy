@@ -110,6 +110,8 @@ Im use RealSense D455 depth camera
 ├── requirements.txt        # Python dependencies
 └── main.py                 # Main script to run the pipeline
 
+---
+
 # Method Details
 
 ## 1. `RealSenseCameraROI`
